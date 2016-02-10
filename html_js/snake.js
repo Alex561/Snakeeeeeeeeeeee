@@ -23,6 +23,8 @@ $(document).ready(function(){
 	var food;
 	var score1;
 	var score2;
+	var p1ID;
+	var p2ID;
 	var game_over;
 	var snake_array1; //keep, initialize with S_INIT packet's data 
 	var snake_array2;
@@ -31,8 +33,10 @@ $(document).ready(function(){
 	function connect(){
     var ip = prompt("Enter IP address to connect to", "127.0.0.1");
 	var port = prompt("Enter port", "");
-	var p1ID = prompt("Enter name for Player 1", "");
-	var p2ID = prompt("Enter name for Player 2", "");
+	p1ID = prompt("Enter name for Player 1", "Solid");
+	p2ID = prompt("Enter name for Player 2", "Liquid");
+	console.log(p1ID + " is player 1");
+	console.log(p2ID + " is player 2");
 	
 	Server = new FancyWebSocket('ws://' + ip + ':' + port);
 	Server.connect(); 
@@ -40,33 +44,17 @@ $(document).ready(function(){
 	//send Client Initialization packet w/ ID's 
 	
 	Server.bind('open', function(){
-		Server.send("ghjghj", "ghjghjghj");
+		Server.send("ID", "C_INIT;" + p1ID + ";" + p2ID);
 	})
 
 	Server.bind('message', function( payload ) {
-	/*	var semis = payload.split(";");
-		if(semis[0] == "S_INIT"){
-			
-			var i = semis[1].indexOf(",");
-			var head1x = parseInt(semis[1]slice(1:i-1));
-			var j = semis[1].indexOf(")");
-			var head1y = parseInt(semis[1]slice(i+1:j-1));
-			var k = semis[1].lastIndexOf(",");
-			var tail1x = parseInt(semis[1]slice(j+1,k));
-			var l =  semis[1].lastIndexOf(")");
-			var tail1y = parseInt(semis[1]slice(j+1,k));
-			if(head1x == tail1x){
-				var length = Math.abs(tail1y - head1y); 
-				for (var ind = 0; ind < length; ind++){
-					snake_array1[ind]
-				}
-			}
+	
+	var splitshit = payload.split(";");
+	//score1 = parseInt(splitshit[0]);
+	//score2 = parseInt(splitshit[1]);
 
-		}	
-			
-	*/
 	console.log(payload);
-    Server.send("asdasd", payload);
+    Server.send("echo", payload);
 	});
 
 	}
@@ -106,36 +94,9 @@ function waitForSocketConnection(socket, callback){
 	
 	//Lets create the snake now
 	
-	//var quit = false;
-/*	if(Server.readyState === 1){
-		Server.send("knees weak, arms heavy, client's ready, mom's spaghetti");
-	}
-	else{
-		setTimeout(function()){
-			Server.waitForConnection()
-		}
-	}*/
-	//while(!quit){
-		
-		//We will add another clause to prevent reverse gear
-		
 	
-	//}
-	
-});
 
-$(document).keydown(function(e){
-	var key = e.which;
-	if(key == "37") Server.send("C_INPUT;" + p1ID + ";LEFT");
-		else if(key == "38" ) Server.send("C_INPUT;" + p1ID + ";UP");
-		else if(key == "39") Server.send("C_INPUT;" + p1ID + ";RIGHT");
-		else if(key == "40") Server.send("C_INPUT;" + p1ID + ";DOWN");
-		if(key == "65") Server.send("C_INPUT;" + p2ID + ";LEFT");
-		else if(key == "87") Server.send("C_INPUT;" + p2ID + ";UP");
-		else if(key == "68") Server.send("C_INPUT;" + p2ID + ";RIGHT");
-		else if(key == "83") Server.send("C_INPUT;" + p2ID + ";DOWN");
-	});
-/*
+
 	
 	function init() //might get rid of this function altogether
 	{
@@ -245,7 +206,8 @@ $(document).keydown(function(e){
 		if(nx1 == food.x && ny1 == food.y)
 		{
 			var tail1 = {x: nx1, y: ny1};
-			score1++;
+			//score1++;
+			Server.send("I ATE","FOOD;" + "player 1");
 			//Create new food
 			create_food();
 		}
@@ -257,7 +219,8 @@ $(document).keydown(function(e){
 		if(nx2 == food.x && ny2 == food.y)
 		{
 			var tail2 = {x: nx2, y: ny2};
-			score2++;
+			//score2++;
+			Server.send("I ATE","FOOD;" + "player 2");
 			//Create new food
 			create_food();
 		}
@@ -292,7 +255,7 @@ $(document).keydown(function(e){
 		var score_text2 = "Player 2: " + score2;
 		ctx.font = ("10px Verdana");
 		ctx.fillText(score_text1, 5, h-5);
-		ctx.fillText(score_text2, w-60, h-5); b
+		ctx.fillText(score_text2, w-60, h-5); 
 	}
 	
 	//Lets first create a generic function to paint cells
@@ -317,6 +280,7 @@ $(document).keydown(function(e){
 		}
 		return false;
 	}
+
 	
 	//Lets add the keyboard controls now
 	$(document).keydown(function(e){
@@ -335,11 +299,10 @@ $(document).keydown(function(e){
 	})
 	
 	
+});	
 	
 	
 	
 	
-	
-})
 
-*/
+
