@@ -2,26 +2,87 @@
 
 #include <iostream>
 #include <iomanip>
+#include <vector>
+#include <sstream>
 
 #include "SnakeController.h"
 
 webSocket SnakeGame::SERVER;
 
-void openHandler1234(int clientID)
+std::string player1_ID = "";
+std::string player2_ID = "";
+
+int player1_score = 0;
+int player2_score = 0;
+
+int connection = -1;
+
+std::vector<std::string> split(const std::string& input, char delimiter)
+{
+	std::istringstream ss(input);
+	std::string token;
+	std::vector<std::string> result;
+
+	while (std::getline(ss, token, delimiter)) 
+	{
+		result.push_back(token);
+	}
+	return result;
+}
+
+void openHandler(int clientID)
 {
 	std::cout << "Connection from " << clientID << std::endl;
 	SnakeGame::SERVER.wsSend(clientID, "Connection received");
+
+	if (connection != -1)
+	{
+		SnakeGame::SERVER.wsSend(clientID, "Game Rejected, only one allowed");
+		SnakeGame::SERVER.wsClose(clientID);
+	}
+	else
+	{
+		connection = clientID;
+	}
 }
 
-void closeHandler1234(int clientID)
+void closeHandler(int clientID)
 {
 	std::cout << "Connection closed " << clientID << std::endl;
 	SnakeGame::SERVER.wsSend(clientID, "Connection closed");
 }
 
-void messageHandler1234(int clientID, string message)
+void messageHandler(int clientID, string message)
 {
 	std::cout << "Message From " << clientID << ":" << message << std::endl;
+	auto splitMessage = split(message, ';');
+
+	std::string& firstToken = splitMessage[0];
+
+	if (firstToken == "C_INIT")
+	{
+		player1_ID = splitMessage[1];
+		player2_ID = splitMessage[2];
+		player1_score = 0; //just in case
+		player2_score = 0;
+		connection = clientID;
+	}
+	else if (firstToken == "FOOD")
+	{
+		if (splitMessage[1] == player1_ID)
+		{
+			player1_score++;
+		}
+		else if (splitMessage[1] == player2_ID)
+		{
+			player2_score++;
+		}
+
+		//use stringstream
+		SnakeGame::SERVER.wsSend(clientID, std::to_string(player1_score) + ";" + std::to_string(player2_score));
+	}
+
+
 //	SnakeGame::SERVER.wsSend(clientID, "anything that tickles my bunyons");
 }
 
@@ -31,9 +92,9 @@ SnakeGame::SnakeGame()
 	snake2_(*this, Direction::UP)
 {
 
-	SERVER.setOpenHandler(openHandler1234);
-	SERVER.setCloseHandler(closeHandler1234);
-	SERVER.setMessageHandler(messageHandler1234);
+	SERVER.setOpenHandler(openHandler);
+	SERVER.setCloseHandler(closeHandler);
+	SERVER.setMessageHandler(messageHandler);
 	SERVER.startServer(PORT_NUM);
 
 	food_.reset(gameBoard_.getRandomPosition());
