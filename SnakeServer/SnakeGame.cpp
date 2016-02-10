@@ -34,7 +34,7 @@ void openHandler(int clientID)
 {
 	std::cout << "Connection from " << clientID << std::endl;
 	SnakeGame::SERVER.wsSend(clientID, "Connection received");
-
+	std::cout << "Connection value: " << connection << std::endl;
 	if (connection != -1)
 	{
 		SnakeGame::SERVER.wsSend(clientID, "Game Rejected, only one allowed");
@@ -50,6 +50,7 @@ void closeHandler(int clientID)
 {
 	std::cout << "Connection closed " << clientID << std::endl;
 	SnakeGame::SERVER.wsSend(clientID, "Connection closed");
+	connection = -1;
 }
 
 void messageHandler(int clientID, string message)

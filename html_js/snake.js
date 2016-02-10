@@ -50,8 +50,8 @@ $(document).ready(function(){
 	Server.bind('message', function( payload ) {
 	
 	var splitshit = payload.split(";");
-	//score1 = parseInt(splitshit[0]);
-	//score2 = parseInt(splitshit[1]);
+	score1 = parseInt(splitshit[0]);
+	score2 = parseInt(splitshit[1]);
 
 	console.log(payload);
     Server.send("echo", payload);
@@ -186,15 +186,18 @@ function waitForSocketConnection(socket, callback){
 			//restart game
 			// add in shit right here to display who wins, probably dont restart? or maybe wait for an input 
 			game_over = true;
-			var winner;
+			/*var winner;
 			ctx.font="20px Verdana";
 
 			if(score1 > score2) winner = "Player 1 wins!";
 			else if(score2 > score1) winner = "Player 2 wins!";
 			else winner = "It's a tie!";
 			ctx.fillText("Game Over!\n" + winner + "\n Press Space to Restart" , 0, 0);
+*/
 
-			//init();
+			Server.send("ID", "C_INIT;" + p1ID + ";" + p2ID);
+			init();
+
 			//Lets organize the code a bit now.
 			return;
 		}
@@ -207,7 +210,7 @@ function waitForSocketConnection(socket, callback){
 		{
 			var tail1 = {x: nx1, y: ny1};
 			//score1++;
-			Server.send("I ATE","FOOD;" + "player 1");
+			Server.send("I ATE","FOOD;" + p1ID);
 			//Create new food
 			create_food();
 		}
@@ -220,7 +223,7 @@ function waitForSocketConnection(socket, callback){
 		{
 			var tail2 = {x: nx2, y: ny2};
 			//score2++;
-			Server.send("I ATE","FOOD;" + "player 2");
+			Server.send("I ATE","FOOD;" + p2ID);
 			//Create new food
 			create_food();
 		}
