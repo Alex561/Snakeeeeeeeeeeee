@@ -19,8 +19,11 @@ public:
 	static const int START_LENGTH = 3;
 
 public:
-	Snake(SnakeGame& game, Direction dir);
+	Snake(SnakeGame* game, Direction dir, int snakeNumber);
 	~Snake();
+
+	Position& getHead();
+	Position& getTail();
 
 	void move();
 	void changeDirection(Direction newDir);
@@ -28,7 +31,7 @@ public:
 	std::vector<Position>& getSegments();
 
 private:
-	SnakeGame& game_;
+	SnakeGame* game_;
 	Direction dir_; //current direction of movement
 
 	//holds all the segments of the snake
@@ -38,6 +41,8 @@ private:
 	//returns true of direction is opposite
 	//so snake doesnt turn into itself
 	bool oppositeDir(Direction a, Direction b);
+
+	int number_;
 
 };
 

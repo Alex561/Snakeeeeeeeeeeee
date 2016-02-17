@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include <ifaddrs.h>
 #elif _WIN32
+#define _WINSOCK_DEPRECATED_NO_WARNINGS
 #include <WinSock2.h>
 #include <ws2tcpip.h>
 #include <iphlpapi.h>

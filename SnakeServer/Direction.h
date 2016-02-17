@@ -1,6 +1,8 @@
 #ifndef DIRECTION_H
 #define DIRECTION_H
 
+#include <string>
+
 //achapp 28191571 alex chapp
 //andresg6 28662951 andres gonzalez
 //klynaugh 25025195 kinsey lynaugh
@@ -13,5 +15,7 @@ enum class Direction
 	LEFT,
 	RIGHT
 };
+
+Direction fromString(const std::string& str);
 
 #endif //DIRECTION_H

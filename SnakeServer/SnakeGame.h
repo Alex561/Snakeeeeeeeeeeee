@@ -22,14 +22,18 @@ public:
 	static const char SNAKE2 = '2';
 	static const char FOOD = 'O';
 
-	static const int PORT_NUM = 44222;
-
-	static webSocket SERVER;
-
-
 public:
+	int p1Score_;
+	int p2Score_;
 	SnakeGame();
 	~SnakeGame();
+
+	void reset();
+
+	bool isOver();
+
+	Snake& getSnake1();
+	Snake& getSnake2();
 
 	bool isValid(const Position& pos);
 	bool isFood(const Position& pos);
@@ -37,9 +41,9 @@ public:
 
 	Food& getFood();
 
+	void update();
 
 	void run();
-
 	void endGame(const std::string& message);
 
 
@@ -51,10 +55,7 @@ private:
 	Snake snake2_;
 
 private:
-
-
 	void processInput();
-	void update();
 	void draw();
 };
 

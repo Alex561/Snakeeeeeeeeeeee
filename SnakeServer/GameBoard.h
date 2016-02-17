@@ -13,8 +13,8 @@
 class GameBoard
 {
 public:
-	static const int ROWS = 20;
-	static const int COLS = 20;
+	static const int ROWS = 45;
+	static const int COLS = 45;
 
 public:
 	GameBoard();

@@ -9,15 +9,26 @@
 //klynaugh 25025195 kinsey lynaugh
 //kgwong 93034206 kevin wong
 
-Snake::Snake(SnakeGame& game, Direction dir)
+Snake::Snake(SnakeGame* game, Direction dir, int snakeNumber)
 	: game_(game),
-	dir_(dir)
+	dir_(dir),
+	number_(snakeNumber)
 {
 }
 
 
 Snake::~Snake()
 {
+}
+
+Position& Snake::getHead()
+{
+	return segments_[0];
+}
+
+Position& Snake::getTail()
+{
+	return segments_[segments_.size() - 1];
 }
 
 void Snake::move()
@@ -42,18 +53,26 @@ void Snake::move()
 	
 	Position newPos = Position{ segments_[0].r + deltaR, segments_[0].c + deltaC };
 
-	if (!game_.isValid(newPos))
+	if (!game_->isValid(newPos))
 	{
-		game_.endGame("This snake ran off screen");
+		game_->endGame("This snake ran off screen");
 	}
-	else if (game_.isFood(newPos))
+	else if (game_->isFood(newPos))
 	{
 		segments_.insert(segments_.begin(), newPos);
-		game_.getFood().eat();
+		game_->getFood().eat();
+		if (number_ == 1)
+		{
+			game_->p1Score_++;
+		}
+		else if (number_ == 2)
+		{
+			game_->p2Score_++;
+		}
 	}
-	else if (game_.isSegment(newPos))
+	else if (game_->isSegment(newPos))
 	{
-		game_.endGame("This snake ran into a segment and died");
+		game_->endGame("This snake ran into a segment and died");
 	}
 	else //normal movement
 	{
