@@ -6,7 +6,6 @@
 
 
 
-
 $(document).ready(function(){
 	//Canvas stuff
 	//console.log('what the shit bro');
@@ -31,6 +30,8 @@ $(document).ready(function(){
 	var snake_array1; //snake_array1 is *this* client's snake
 	var snake_array2; //snake_array2 is the other client's snake
 	var Server; 
+	var total_latency = 0;
+	var latency_samples = 0;
 
 	function connect(){
     var ip = prompt("Enter IP address to connect to", "127.0.0.1");
@@ -50,7 +51,11 @@ $(document).ready(function(){
 		//server should probably send a packet upon connection that tells each client both player names so t
 	})
 }
+
 connect();
+
+
+
 
 	function make_snake(hx,hy,tx,ty){
 		var snake_array = [];
@@ -144,8 +149,50 @@ connect();
 			snake_array2 = snake_me_up_before_you_go_go(head2x,head2y,score2,old_score2,snake_array2);
 			paint();
 		}
+		else if(semis[0] == "S_TIMESTAMP"){
+			var t3 = Date.now();
+			//var t3 = now.parse();
+			var t0 = semis[1];
+			var t1 = semis[2];
+			var t2 = semis[3];
+
+			total_latency += ((t3-t0)-(t2-t1));
+			latency_samples++;
+
+
+
+		}
 
 	});
+
+/*Server.bind('close',function({
+	
+	quit = true;
+});*/
+
+var iFrequency = 5000; // expressed in miliseconds
+var myInterval = 0;
+
+// STARTS and Resets the loop if any
+function sendTime()
+{
+    var now = Date.now();
+   // var utc_now = Date.UTC(now.getUTCyear)
+    Server.send("time bitch", "C_TIMESTAMP;" + now);
+}
+
+function startLoop() {
+    if(myInterval > 0) clearInterval(myInterval);  // stop
+    myInterval = setInterval( sendTime, iFrequency );  // run
+}
+Server.bind('close', function(){
+	clearInterval(myInterval);
+});
+
+
+
+startLoop();
+
 
 	
 	
@@ -174,14 +221,15 @@ connect();
 			//Lets paint 10px wide cells
 			paint_cell(c.x, c.y,"p2");
 		}
-		
+		var latency = total_latency/latency_samples;
 		//Lets paint the food
 		paint_cell(food.x, food.y, "food");
 		var score_text1 = p1ID + ": " + score1;
 		var score_text2 = p2ID + ": " + score2;
 		ctx.font = ("10px Verdana");
+		ctx.fillText("Average Latency: "+ latency, 5,10);
 		ctx.fillText(score_text1, 5, h-5);
-		ctx.fillText(score_text2, w-150, h-5); 
+		ctx.fillText(score_text2, w-60, h-5); 
 		//Lets paint the score
 	}
 	
@@ -208,9 +256,13 @@ connect();
 		else if(key == "38" ) Server.send("input","C_INPUT;UP");
 		else if(key == "39" ) Server.send("input","C_INPUT;RIGHT");
 		else if(key == "40" ) Server.send("input","C_INPUT;DOWN");
+		
+		//var now = new Date();
+		//console.log(now.getHours() + ":" + now.getMinutes() + ":" + now.getMilliseconds());
+   
 		//The snake is now keyboard controllable
-	})
-	
+	});
+
 	
 });	
 	
