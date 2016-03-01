@@ -80,7 +80,6 @@ void serverSend(int clientID, string message)
 //adds to receive queue
 void serverReceive(int clientID, string message)
 {
-	//this doesn't work because connection1 isn't set until both C_INIT's happen
 	if (clientID == connection1)
 	{
 		p1_receive_queue.push(message);
@@ -104,7 +103,6 @@ void sendQueuedMessages(int playerNum, std::queue<string>& queue, int& latencyVa
 
 	if (latencyValueRef <= 0 && !queue.empty())
 	{
-		std::cout << "sending" << std::endl;
 		int connection = playerNum == 1 ? connection1 : connection2;
 		SERVER.wsSend(connection, queue.front());
 		queue.pop();
@@ -124,7 +122,6 @@ void receiveQueuedMessages(int playerNum, std::queue<string>& queue, int& latenc
 	}
 	if (latencyValueRef <= 0 && !queue.empty())
 	{
-		std::cout << "receiving" << std::endl;
 		int connection = playerNum == 1 ? connection1 : connection2;
 		handleDequeuedMessage(connection, queue.front());
 		queue.pop();
@@ -146,17 +143,12 @@ void handleDequeuedMessage(int clientID, string message)
 		if (clientID == connection1)
 		{
 			player1_ID = splitMessage[1];
-			//connection1 = clientID;
-			//p1_join = true;
 		}
 		else
 		{
 			player2_ID = splitMessage[1];
-			//connection2 = clientID;
-
 			game.reset();
 
-			//was SERVER.send(...
 			serverSend(connection1, "S_INIT;" + game.getSnake1().getHead().toString() + ";" + game.getSnake1().getTail().toString() + ";"
 				+ game.getSnake2().getHead().toString() + ";" + game.getSnake2().getTail().toString() + ";" + game.getFood().getPosition().toString() + ';' + player2_ID);
 			serverSend(connection2, "S_INIT;" + game.getSnake2().getHead().toString() + ";" + game.getSnake2().getTail().toString() + ";"
@@ -258,7 +250,6 @@ void periodicHandler()
 		sendQueuedMessages(1, p1_send_queue, p1_send_latency);
 		sendQueuedMessages(2, p2_send_queue, p2_send_latency);
 		if (countdown == 0) {
-			std::cout << "periodicHandler" << std::endl;
 
 			if (!game.isOver())
 			{
