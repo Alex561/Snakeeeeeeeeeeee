@@ -82,6 +82,11 @@ void Snake::move()
 
 }
 
+Direction Snake::getDirection()
+{
+	return dir_;
+}
+
 void Snake::changeDirection(Direction newDir)
 {
 	//don't let snake turn backwards

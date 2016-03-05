@@ -27,3 +27,21 @@ Direction fromString(const std::string& str)
 		return Direction::UP;
 	}
 }
+
+std::string toString(Direction d)
+{
+	switch (d)
+	{
+	case Direction::DOWN:
+		return "DOWN";
+	case Direction::UP:
+		return "UP";
+	case Direction::LEFT:
+		return "LEFT";
+	case Direction::RIGHT:
+		return "RIGHT";
+	default:
+		std::cout << "Error converting to string" << std::endl;
+		return "ERROR";
+	}
+}

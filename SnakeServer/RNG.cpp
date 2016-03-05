@@ -22,5 +22,11 @@ int RNG::getInt(int lowerBound, int upperBound)
 	return dist(engine_);
 }
 
+int RNG::getNormalInt(double mean, double stddev)
+{
+	std::normal_distribution<double> dist(mean, stddev);
+	return (int)(dist(engine_));
+}
+
 
 

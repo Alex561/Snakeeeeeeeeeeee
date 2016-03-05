@@ -17,5 +17,6 @@ enum class Direction
 };
 
 Direction fromString(const std::string& str);
+std::string toString(Direction d);
 
 #endif //DIRECTION_H

@@ -16,6 +16,7 @@ public:
 
 	//returns a random number between lower (inclusive) and upper (exclusive)
 	static int getInt(int lowerBound, int upperBound);
+	static int getNormalInt(double mean, double stddev);
 
 private:
 	static std::default_random_engine engine_;

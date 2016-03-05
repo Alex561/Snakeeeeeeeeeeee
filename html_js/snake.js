@@ -155,7 +155,10 @@ connect();
 			var t0 = semis[1];
 			var t1 = semis[2];
 			var t2 = semis[3];
-
+			
+			console.log(t3);
+			console.log(t3 - t2);
+			
 			total_latency += ((t3-t0)-(t2-t1));
 			latency_samples++;
 
@@ -170,7 +173,7 @@ connect();
 	quit = true;
 });*/
 
-var iFrequency = 5000; // expressed in miliseconds
+var iFrequency = 1000; // expressed in miliseconds
 var myInterval = 0;
 
 // STARTS and Resets the loop if any

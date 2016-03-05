@@ -56,7 +56,11 @@ std::vector<std::string> split(const std::string& input, char delimiter)
 
 int getRandomLatency()
 {
-	return RNG::getInt(0, 100);
+	//1 = 10ms
+	int latency = RNG::getNormalInt(30, 10);
+	//int latency = RNG::getInt(0, 100);
+	//std::cout << latency << std::endl;
+	return latency;
 }
 
 //adds to queue with delay
@@ -116,6 +120,7 @@ void sendQueuedMessages(int playerNum, std::queue<string>& queue, int& latencyVa
 
 void receiveQueuedMessages(int playerNum, std::queue<string>& queue, int& latencyValueRef)
 {
+	//std::cout << latencyValueRef << std::endl;
 	if (playerNum != 1 && playerNum != 2)
 	{
 		std::cout << "You messed up " << __FUNCTION__ << " " << playerNum << std::endl;
@@ -125,6 +130,9 @@ void receiveQueuedMessages(int playerNum, std::queue<string>& queue, int& latenc
 		int connection = playerNum == 1 ? connection1 : connection2;
 		handleDequeuedMessage(connection, queue.front());
 		queue.pop();
+		latencyValueRef = getRandomLatency();
+	}
+	else if (latencyValueRef <= 0) {
 		latencyValueRef = getRandomLatency();
 	}
 	else
@@ -150,9 +158,9 @@ void handleDequeuedMessage(int clientID, string message)
 			game.reset();
 
 			serverSend(connection1, "S_INIT;" + game.getSnake1().getHead().toString() + ";" + game.getSnake1().getTail().toString() + ";"
-				+ game.getSnake2().getHead().toString() + ";" + game.getSnake2().getTail().toString() + ";" + game.getFood().getPosition().toString() + ';' + player2_ID);
+				+ game.getSnake2().getHead().toString() + ";" + game.getSnake2().getTail().toString() + ";" + game.getFood().getPosition().toString() + ';' + player2_ID + ';' + toString(game.getSnake1().getDirection()) + ';' + toString(game.getSnake2().getDirection()));
 			serverSend(connection2, "S_INIT;" + game.getSnake2().getHead().toString() + ";" + game.getSnake2().getTail().toString() + ";"
-				+ game.getSnake1().getHead().toString() + ";" + game.getSnake1().getTail().toString() + ";" + game.getFood().getPosition().toString() + ';' + player1_ID);
+				+ game.getSnake1().getHead().toString() + ";" + game.getSnake1().getTail().toString() + ";" + game.getFood().getPosition().toString() + ';' + player1_ID + ';' + toString(game.getSnake2().getDirection()) + ';' + toString(game.getSnake1().getDirection()));
 
 		}
 	}
@@ -189,6 +197,7 @@ void handleDequeuedMessage(int clientID, string message)
 				system_clock::now().time_since_epoch()
 				); 
 			serverSend(connection1, "S_TIMESTAMP;" + timeSent + ";" + std::to_string(timeGot.count()) + ";" + std::to_string(timeNow.count()));
+			//std::cout << p1_send_latency << std::endl;
 		}
 		else if (clientID == connection2)
 		{
@@ -196,6 +205,7 @@ void handleDequeuedMessage(int clientID, string message)
 				system_clock::now().time_since_epoch()
 				);
 			serverSend(connection2, "S_TIMESTAMP;" + timeSent + ";" + std::to_string(timeGot.count()) + ";" + std::to_string(timeNow.count()));
+			//std::cout << p2_send_latency << std::endl;
 		}
 		else
 		{
@@ -256,9 +266,9 @@ void periodicHandler()
 				game.update();
 			}
 			serverSend(connection1, "S_UP;" + game.getSnake1().getHead().toString() + ";"
-				+ game.getSnake2().getHead().toString() + ";" + game.getFood().getPosition().toString() + ";" + std::to_string(game.p1Score_) + ";" + std::to_string(game.p2Score_));
+				+ game.getSnake2().getHead().toString() + ";" + game.getFood().getPosition().toString() + ";" + std::to_string(game.p1Score_) + ";" + std::to_string(game.p2Score_) + ';' + toString(game.getSnake2().getDirection()));
 			serverSend(connection2, "S_UP;" + game.getSnake2().getHead().toString() + ";"
-				+ game.getSnake1().getHead().toString() + ";" + game.getFood().getPosition().toString() + ";" + std::to_string(game.p2Score_) + ";" + std::to_string(game.p1Score_));
+				+ game.getSnake1().getHead().toString() + ";" + game.getFood().getPosition().toString() + ";" + std::to_string(game.p2Score_) + ";" + std::to_string(game.p1Score_) + ';' + toString(game.getSnake1().getDirection()));
 
 
 

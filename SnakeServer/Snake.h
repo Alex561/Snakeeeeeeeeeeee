@@ -26,6 +26,8 @@ public:
 	Position& getTail();
 
 	void move();
+
+	Direction getDirection();
 	void changeDirection(Direction newDir);
 
 	std::vector<Position>& getSegments();
