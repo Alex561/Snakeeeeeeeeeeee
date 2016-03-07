@@ -56,11 +56,7 @@ std::vector<std::string> split(const std::string& input, char delimiter)
 
 int getRandomLatency()
 {
-	//1 = 10ms
 	int latency = RNG::getNormalInt(30, 10);
-	//int latency = RNG::getInt(0, 100);
-	//std::cout << latency << std::endl;
-	//return 0;
 	return latency;
 }
 
@@ -189,15 +185,12 @@ void handleDequeuedMessage(int clientID, string message)
 			system_clock::now().time_since_epoch()
 			);
 
-		//record time in utc milliseconds since 1970 a long long
-		//std::time_t timeGot = std::time(0);  // t is an integer type
 		if (clientID == connection1)
 		{
 			std::chrono::milliseconds timeNow = duration_cast< milliseconds >(
 				system_clock::now().time_since_epoch()
 				); 
 			serverSend(connection1, "S_TIMESTAMP;" + timeSent + ";" + std::to_string(timeGot.count()) + ";" + std::to_string(timeNow.count()));
-			//std::cout << p1_send_latency << std::endl;
 		}
 		else if (clientID == connection2)
 		{
@@ -205,7 +198,6 @@ void handleDequeuedMessage(int clientID, string message)
 				system_clock::now().time_since_epoch()
 				);
 			serverSend(connection2, "S_TIMESTAMP;" + timeSent + ";" + std::to_string(timeGot.count()) + ";" + std::to_string(timeNow.count()));
-			//std::cout << p2_send_latency << std::endl;
 		}
 		else
 		{
@@ -217,10 +209,10 @@ void handleDequeuedMessage(int clientID, string message)
 void openHandler(int clientID)
 {
 	std::cout << "Connection from " << clientID << std::endl;
-	SERVER.wsSend(clientID, "Connection received"); 
+	SERVER.wsSend(clientID, "Connection received");
 	if (!p1_join)
 	{
-	
+
 		connection1 = clientID;
 		p1_join = true;
 	}
