@@ -60,6 +60,7 @@ int getRandomLatency()
 	int latency = RNG::getNormalInt(30, 10);
 	//int latency = RNG::getInt(0, 100);
 	//std::cout << latency << std::endl;
+	//return 0;
 	return latency;
 }
 
@@ -120,7 +121,6 @@ void sendQueuedMessages(int playerNum, std::queue<string>& queue, int& latencyVa
 
 void receiveQueuedMessages(int playerNum, std::queue<string>& queue, int& latencyValueRef)
 {
-	//std::cout << latencyValueRef << std::endl;
 	if (playerNum != 1 && playerNum != 2)
 	{
 		std::cout << "You messed up " << __FUNCTION__ << " " << playerNum << std::endl;
@@ -227,12 +227,6 @@ void openHandler(int clientID)
 	else {
 		connection2 = clientID;
 	}
-													/*if (connection != -1)
-	{
-	SnakeGame::SERVER.wsSend(clientID, "Game Rejected, only one allowed");
-	SnakeGame::SERVER.wsClose(clientID);
-	*/
-	//connection = clientID;
 }
 
 void closeHandler(int clientID)
@@ -269,8 +263,8 @@ void periodicHandler()
 				+ game.getSnake2().getHead().toString() + ";" + game.getFood().getPosition().toString() + ";" + std::to_string(game.p1Score_) + ";" + std::to_string(game.p2Score_) + ';' + toString(game.getSnake2().getDirection()));
 			serverSend(connection2, "S_UP;" + game.getSnake2().getHead().toString() + ";"
 				+ game.getSnake1().getHead().toString() + ";" + game.getFood().getPosition().toString() + ";" + std::to_string(game.p2Score_) + ";" + std::to_string(game.p1Score_) + ';' + toString(game.getSnake1().getDirection()));
-
-
+				
+				
 
 
 			if (game.isOver())
